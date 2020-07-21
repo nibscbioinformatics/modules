@@ -19,6 +19,9 @@ General scope
 
 ### Create new branch
 
+![create branch](images/branch.png)
+
+
 ### Subcommands
 
 
@@ -45,3 +48,8 @@ General scope
 
 
 ## Submit your module with a Pull Request
+
+![initiate pull](images/pr_create.png)
+
+
+![open pull](images/pr_open.png)
