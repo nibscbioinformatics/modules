@@ -37,6 +37,9 @@ General scope
 
 ### Modify the module code
 
+**module settings** in a central config
+
+**sample metadata** in a map
 
 ### Write a test script
 
