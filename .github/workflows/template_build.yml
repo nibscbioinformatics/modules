@@ -12,11 +12,12 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v1
-      - name: Build and push to Github Docker
-        env:
-          user: ${{ secrets.GITPACKAGE_USER }}
-          token: ${{ secrets.GITPACKAGE_TOKEN }}
-        run: |
-        docker login https://docker.pkg.github.com -u "$user" --password "$token"
-        docker build -t docker.pkg.github.com/nibscbioinformatics/modules/template software/template/.
-        docker push docker.pkg.github.com/nibscbioinformatics/modules/template
+      - name: Build and Push to GitHub Packages
+        uses: docker/build-push-action@v1
+        with:
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+          registry: docker.pkg.github.com
+          repository: nibscbioinformatics/modules/template
+          path: ./software/template
+          tag_with_ref: true
