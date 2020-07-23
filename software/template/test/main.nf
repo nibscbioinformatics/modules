@@ -8,7 +8,7 @@ params.single_end = false
 include { FASTQC } from '../main.nf' params(params)
 
 
-workflow paired_end {
+workflow {
   input = "${baseDir}/data/test_samples.tsv"
   inputSample = Channel.empty()
   inputSample = readInputFile(tsvFile, params.single_end)
