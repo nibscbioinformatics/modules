@@ -34,7 +34,7 @@ process FASTQC {
   script:
   // elegant solution as implemented by nf-core
   // all credits to original authors :)
-  if (meta.single_end) {
+  if (params.single_end) {
       """
       [ ! -f  ${meta.sampleID}.fastq.gz ] && ln -s $reads ${meta.sampleID}.fastq.gz
       fastqc ${params.modules['fastqc'].args} --threads $task.cpus ${meta.sampleID}.fastq.gz

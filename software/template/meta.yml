@@ -41,6 +41,12 @@ params:
         Whether or not to publish results into `publish_dir`. Set to `none` to not
         publish any files at all; to `default` to publish all relevant files.
       default: set to 'default', i.e. publishes all relevant files.
+  - single_end:
+    type: boolean
+    description: |
+      Boolean indicating whether the corresponding sample is single-end (true)
+      or paired-end (false).
+    default: false
 input:
   - meta:
       type: map
@@ -52,11 +58,6 @@ input:
       - sampleID:
         type: string
         description: Sample identifier
-      - single_end:
-        type: boolean
-        description: |
-          Boolean indicating whether the corresponding sample is single-end (true)
-          or paired-end (false).
   - reads:
       type: file
       description: |
