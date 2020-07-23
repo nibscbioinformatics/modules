@@ -11,7 +11,7 @@ include { FASTQC } from '../main.nf' params(params)
 workflow {
   input = "${baseDir}/data/test_samples.tsv"
   inputSample = Channel.empty()
-  inputSample = readInputFile(tsvFile, params.single_end)
+  inputSample = readInputFile(input, params.single_end)
 
   FASTQC(inputSample)
 
