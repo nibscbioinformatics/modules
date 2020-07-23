@@ -16,7 +16,7 @@ jobs:
         uses: docker/build-push-action@v1.1.0
         with:
           username: ${{ secrets.GITPACKAGE_USER }}
-          password: ${{ secrets.GITHUB_TOKEN }}
+          password: ${{ secrets.GITPACKAGE_TOKEN }}
           repository: docker.pkg.github.com/nibscbioinformatics/template
           tag_with_sha: true
           path: ./software/template
