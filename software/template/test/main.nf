@@ -4,6 +4,7 @@ nextflow.preview.dsl = 2
 params.out_dir = "test_output"
 params.publish_dir_mode = "copy"
 params.single_end = false
+params.conda = false
 
 include { FASTQC } from '../main.nf' params(params)
 
