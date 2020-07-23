@@ -1,0 +1,24 @@
+name: Docker Build & Push - Finishing
+
+on:
+  push:
+    paths:
+      - software/template/Dockerfile
+      - software/template/environment.yml
+      - .github/workflows/template_build.yml
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v1
+      - name: Build and push Docker images
+        uses: docker/build-push-action@v1.1.0
+        with:
+          username: ${{ secrets.GITPACKAGE_USER }}
+          password: ${{ secrets.GITPACKAGE_TOKEN }}
+          repository: docker.pkg.github.com/nibscbioinformatics/template
+          tag_with_sha: true
+          path: ./software/template
+          always_pull: false
+          push: true
