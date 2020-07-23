@@ -48,7 +48,7 @@ def checkExtension(file, extension) {
 
 def checkFile(String filePath, String extension) {
   // first let's check if has the correct extension
-  if (!checkExtension(filePath, extension) exit 1, "File: ${filePath} has the wrong extension. See --help for more information"
+  if (!checkExtension(filePath, extension)) exit 1, "File: ${filePath} has the wrong extension. See --help for more information"
   // then we check if the file exists
   if (!file(filePath).exists()) exit 1, "Missing file in TSV file: ${filePath}, see --help for more information"
   // if none of the above has thrown an error, return the file
