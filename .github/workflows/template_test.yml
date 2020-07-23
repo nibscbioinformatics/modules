@@ -27,7 +27,7 @@ jobs:
     # Test the module
     - name: Run with conda
       run: |
-        nextflow run ./software/template/test/ -profile conda
+        nextflow run ./software/template/test/ --conda true
 
     - name: Run with docker
       run: |
