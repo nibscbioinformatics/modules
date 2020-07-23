@@ -1,4 +1,4 @@
-def MODULE = "fastqc"
+def MODULE = "template"
 params.publish_dir = MODULE
 params.publish_results = "default"
 
