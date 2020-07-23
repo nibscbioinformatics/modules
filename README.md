@@ -169,6 +169,26 @@ ${params.modules['modulename'].args}
 
 2. **sample metadata** should be passed to the module as a [Groovy Map](http://groovy-lang.org/groovy-dev-kit.html#Collections-Maps) in a **tuple** with an array containing the reads.
 
+This means the metadata can be created with something like
+
+```
+def meta = [:]
+meta.id = yourdatafield
+meta.type = yourotherdatafield
+```
+
+The reads will be defined by something like:
+
+```
+reads = [ file(read1), file(read2) ]
+```
+
+And the tuple can be emitted as:
+
+```
+sampleInfo = [ meta, reads ]
+```
+
 Currently, we have written a basic function in the template test workflow to read a sample TSV file, and create this structure. Soon we will prepare a module with this functionality.
 
 

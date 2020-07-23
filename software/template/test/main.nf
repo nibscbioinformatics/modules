@@ -77,7 +77,7 @@ def readInputFile(tsvFile, single_end) {
             } else {
               reads = [ checkFile(row.read1, "fastq.gz"), checkFile(row.read2, "fastq.gz") ]
             }
-            array = [ meta, reads]
-            return array
+            sampleinfo = [ meta, reads ]
+            return sampleinfo
         }
 }
