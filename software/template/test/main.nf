@@ -3,13 +3,34 @@
 nextflow.preview.dsl = 2
 params.out_dir = "test_output"
 params.publish_dir_mode = "copy"
+params.single_end = false
+
+include { FASTQC } from '../main.nf' params(params)
 
 
+workflow paired_end {
+  input = "${baseDir}/data/test_samples.tsv"
+  inputSample = Channel.empty()
+  inputSample = readInputFile(tsvFile, params.single_end)
 
+  FASTQC(inputSample)
 
+  // ## IMPORTANT this is a test workflow
+  // so a test should always been implemented to check
+  // the output corresponds to what expected
 
+  FASTQC.out.html.map { map, reports ->
+    html_read1 = reports[0]
+    html_read2 = reports[1]
 
+    assert html_read1.exists()
+    assert html_read2.exists()
+    assert html_read1.getExtension() == "html"
+    assert html_read2.getExtension() == "html"
 
+  }
+
+}
 
 
 
@@ -31,7 +52,7 @@ def checkFile(String filePath, String extension) {
   // then we check if the file exists
   if (!file(filePath).exists()) exit 1, "Missing file in TSV file: ${filePath}, see --help for more information"
   // if none of the above has thrown an error, return the file
-  return(filePath)
+  return(file(filePath))
 }
 
 // the function expects a tab delimited sample sheet, with a header in the first line
