@@ -7,6 +7,23 @@ This repository has a couple of main goals:
 
 The NF-Core community is engaged in a huge effort, to convert most pipelines to DSL2 and build all necessary modules: for this reason, beyond the scope described above, it is important to contribute rather than duplicate the efforts.
 
+## Table of contents
+
+- [NF-Core](#nf-core)
+      - [nf-core principles](#nf-core-principles)
+      - [contributions and overlaps](#contributions-and-overlaps)
+- [How to add a new Module to this repository](#how-to-add-a-new-module-to-this-repository)
+      - [Create new branch](#create-new-branch)
+      - [Subcommands](#subcommands)
+- [How to use the base template](#how-to-use-the-base-template)
+      - [Identify test data](#identify-test-data)
+      - [Modify the container](#modify-the-container)
+      - [Modify the module code](#modify-the-module-code)
+      - [Write a test script](#write-a-test-script)
+      - [Modify Github Actions](#modify-github-actions)
+- [Submit your module with a Pull Request](#submit-your-module-with-a-pull-request)
+
+
 
 ## NF-Core
 
