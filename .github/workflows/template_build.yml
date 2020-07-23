@@ -12,13 +12,9 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v1
-      - name: Build and push Docker images
-        uses: docker/build-push-action@v1.1.0
-        with:
-          username: ${{ secrets.GITPACKAGE_USER }}
-          password: ${{ secrets.GITPACKAGE_TOKEN }}
-          repository: docker.pkg.github.com/nibscbioinformatics/modules/template
-          tag_with_sha: true
-          path: ./software/template
-          always_pull: false
-          push: true
+      - name: Build and push to Github Docker
+        run: |
+        docker login https://docker.pkg.github.com -u ${{ secrets.GITPACKAGE_USER }} --password ${{ secrets.GITPACKAGE_TOKEN }}
+        tag=test=`cat software/template/Dockerfile software/template/environment.yml | sha256sum | cut -f 1 -d" "`
+        docker build -t docker.pkg.github.com/nibscbioinformatics/modules/template:${tag} software/template/.
+        docker push docker.pkg.github.com/nibscbioinformatics/modules/template:${tag}
