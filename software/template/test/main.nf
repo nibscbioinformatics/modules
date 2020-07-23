@@ -9,7 +9,7 @@ include { FASTQC } from '../main.nf' params(params)
 
 
 workflow {
-  input = "${baseDir}/data/test_samples.tsv"
+  input = file("${baseDir}/data/test_samples.tsv")
   inputSample = Channel.empty()
   inputSample = readInputFile(input, params.single_end)
 
@@ -63,7 +63,7 @@ def checkFile(String filePath, String extension) {
 // any other column should fulfill the requirements of modules imported in main
 // the function also expects a boolean for single or paired end reads from params
 
-def readInputFile(String tsvFile, boolean single_end) {
+def readInputFile(File tsvFile, boolean single_end) {
     Channel.from(tsvFile)
         .splitCsv(header:true, sep: '\t')
         .map { row ->
