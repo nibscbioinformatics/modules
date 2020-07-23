@@ -1,8 +1,8 @@
-name: Docker Build & Push - Finishing
+name: Docker Build & Push
 
 on:
   push:
-    paths:
+    paths: # TODO --> modify "template" below to refer to your module and your new action
       - software/template/Dockerfile
       - software/template/environment.yml
       - .github/workflows/template_build.yml
@@ -18,6 +18,6 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
           registry: docker.pkg.github.com
-          repository: nibscbioinformatics/modules/template
-          path: ./software/template
+          repository: nibscbioinformatics/modules/template # TODO -> change "template" with your module name
+          path: ./software/template # TODO --> change "template" with your module name
           tag_with_ref: true
