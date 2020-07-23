@@ -3,9 +3,9 @@
 This repository has a couple of main goals:
 
 - collect shared modules that might be specific to NIBSC needs and activities
-- provide the team a playground to develop and test modules, before contributing to the community
+- provide the team with a playground to develop and test modules, before contributing to the community
 
-The NF-Core community is engaged in a huge effort, to convert most pipelines to DSL2 and build all necessary modules: for this reason, beyond the above scopes, it is important to contribute rather than duplicate the efforts.
+The NF-Core community is engaged in a huge effort, to convert most pipelines to DSL2 and build all necessary modules: for this reason, beyond the scope described above, it is important to contribute rather than duplicate the efforts.
 
 
 ## NF-Core
@@ -86,6 +86,24 @@ The template (available under *software/template*) is inspired to a couple of im
 - documentation: all modules should be documented, and a structured YAML file should be written to clearly describe the expected inputs and outputs
 - automation: github actions are used to check the validity of the code, using test data and a mini-workflow
 
+The template contains the following structure:
+
+```{bash}
++--- Dockerfile
++--- environment.yml
++--- main.nf
++--- meta.yml
++--- README.md
++--- test
+|   +--- data
+|   |   +--- test2_reads_1.fastq.gz
+|   |   +--- test2_reads_2.fastq.gz
+|   |   +--- test_reads_1.fastq.gz
+|   |   +--- test_reads_2.fastq.gz
+|   |   +--- test_samples.tsv
+|   +--- main.nf
+|   +--- nextflow.config
+```
 
 ### Identify test data
 
@@ -98,25 +116,113 @@ Once you have prepared the test data, place them under *software/modulename/test
 
 ### Modify the container
 
+Currently, it has been agreed
+
+1. to use [Biocontainers](https://biocontainers.pro/#/registry) for single-software modules
+2. to use the latest version of the software
+
+You should change the module template, where it indicates the Biocontainer
+
+```{bash}
+container "quay.io/biocontainers/fastqc:0.11.9--0"
+```
+
+to the appropriate software and version you need to use.
+
+However, we still want to modify our custom Docker container, which is particularly useful when multiple software applications need to be used.
+In order to do that, we need to slighly modify the following files
+
+```{bash}
++--- Dockerfile
++--- environment.yml
+```
+
+First, the **environment.yml**: here you should change the name of the environment, and the software to be installed.
+Then, the **Dockerfile** should be modified to change the *PATH* with the name of the conda environment as you changed it in the *environment.yml*.
+
+All files contain comments, which should help identifying the changes to be introduced.
+
 
 ### Modify the module code
 
-**module settings** in a central config
+In order to ensure consistency, it's been agreed for the moment that:
 
-**sample metadata** in a map
+1. **module settings** should be located in the main **nextflow.config** file, using the JSON structure that has been adopted for genome references, i.e.
+
+```{bash}
+params {
+  modules {
+    'modulename' {
+      args = "--newarg xyz"
+      more = "this and that"
+    }
+  }
+}
+```
+
+In this way, the appropriate parameters can always be called inside the module code by using the expression:
+
+```
+${params.modules['modulename'].args}
+```
+
+
+2. **sample metadata** should be passed to the module as a [Groovy Map](http://groovy-lang.org/groovy-dev-kit.html#Collections-Maps) in a **tuple** with an array containing the reads.
+
+Currently, we have written a basic function in the template test workflow to read a sample TSV file, and create this structure. Soon we will prepare a module with this functionality.
+
 
 ### Write a test script
 
+The test folder contains the following structure:
 
-### Modify container build github action
+```
++--- test
+|   +--- data
+|   |   +--- test_reads_1.fastq.gz
+|   |   +--- test_reads_2.fastq.gz
+|   |   +--- test_samples.tsv
+|   +--- main.nf
+|   +--- nextflow.config
+```
 
+You will have already modified the contents of the *test/data* folder, to add the identified small datasets.
+You should replace the *test_samples.tsv* with an appropriate one, pointing to the new data.
 
-### Modify module test github action
+It is important to modify the **main.nf** located in *test/data* to create an appropriate workflow which can load and execute the module you have created.
+Additionally, the workflow should test in the most appropriate way that the results match what is expected.
+
+### Modify Github Actions
+
+The folder **.github** prepared for the template contains the following:
+
+```
++--- workflows
+|   +--- template_build.yml
+|   +--- template_test.yml
+```
+
+You should **create a copy** of both files, and rename it as *modulename_build.yml* and *modulename_test.yml*, where *modulename* is the name you chose for the module and corresponding to the folder you added under **software/**.
+
+Both files include comments which should highlight the parts of the code you need to modify, in order to enable github actions that will:
+
+- build the custom container for your module
+- run the test workflow using both conda and docker profile
 
 
 ## Submit your module with a Pull Request
 
+Once you have completed development, you are ready to submit a pull request with the code you worked on.
+Make sure you are located in the correct branch, with your module name (i.e. the folder with your module will be visible, as indicated by the blue arrow) and click on *pull request* as indicated by the red arrow below.
+
 ![initiate pull](images/pr_create.png)
 
+Now, following the steps highlighted in the picture below:
 
 ![open pull](images/pr_open.png)
+
+1. make sure you are merging from **your branch** into **master**
+2. give a meaningful title (i.e. your module name) and describe the key functionality you are adding (*a PR template will be provided soon*)
+3. select some other members of the team (2) to act as reviewers, and assign the appropriate labels.
+
+And you're ready to go!
