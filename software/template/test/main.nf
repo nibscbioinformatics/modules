@@ -46,7 +46,7 @@ def checkExtension(file, extension) {
     file.toString().toLowerCase().endsWith(extension.toLowerCase())
 }
 
-def checkFile(String filePath, String extension) {
+def checkFile(filePath, extension) {
   // first let's check if has the correct extension
   if (!checkExtension(filePath, extension)) exit 1, "File: ${filePath} has the wrong extension. See --help for more information"
   // then we check if the file exists
@@ -63,7 +63,7 @@ def checkFile(String filePath, String extension) {
 // any other column should fulfill the requirements of modules imported in main
 // the function also expects a boolean for single or paired end reads from params
 
-def readInputFile(File tsvFile, boolean single_end) {
+def readInputFile(tsvFile, single_end) {
     Channel.from(tsvFile)
         .splitCsv(header:true, sep: '\t')
         .map { row ->
