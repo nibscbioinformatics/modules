@@ -13,7 +13,11 @@ process FASTQC {
                     if (params.publish_results == "none") null
                     else filename }
 
-    container "docker.pkg.github.com/nibscbioinformatics/$MODULE"
+    //container "docker.pkg.github.com/nibscbioinformatics/$MODULE"
+    // need to use biocontainers because of problem with github registry
+    // requesting o-auth
+    container "biocontainers/fastqc:v0.11.9_cv6" // TODO -> change with appropriate biocontainer 
+
 
   input:
   // --> meta is a Groovy MAP containing any number of information (metadata) per sample
