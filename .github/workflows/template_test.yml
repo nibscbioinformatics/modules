@@ -1,0 +1,28 @@
+name: Test Template # TODO -> change "template" with your actual name
+on:
+  push:
+    paths:
+      - software/template/**
+      - .github/workflows/template_test.yml
+  pull_request:
+    paths:
+      - software/template/**
+      - .github/workflows/template_test.yml
+
+jobs:
+  ci_test:
+    runs-on: ubuntu-latest
+    env:
+      NXF_ANSI_LOG: false
+    steps:
+
+    - uses: actions/checkout@v2
+
+    - name: Install Nextflow
+      run: |
+        export NXF_VER="20.06.0-edge"
+        wget -qO- get.nextflow.io | bash
+        sudo mv nextflow /usr/local/bin/
+
+    # Test the module
+    - run: nextflow run ./software/template/test/
