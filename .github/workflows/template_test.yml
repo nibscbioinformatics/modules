@@ -25,4 +25,10 @@ jobs:
         sudo mv nextflow /usr/local/bin/
 
     # Test the module
-    - run: nextflow run ./software/template/test/
+    - name: Run with conda
+      run: |
+        nextflow run ./software/template/test/ -profile conda
+
+    - name: Run with docker
+      run: |
+        nextflow run ./software/template/test/ -profile docker
