@@ -16,7 +16,8 @@ process FASTQC {
     //container "docker.pkg.github.com/nibscbioinformatics/$MODULE"
     // need to use biocontainers because of problem with github registry
     // requesting o-auth
-    container "biocontainers/fastqc:v0.11.9_cv6" // TODO -> change with appropriate biocontainer 
+    container "biocontainers/fastqc:v0.11.9_cv6" // TODO -> change with appropriate biocontainer
+    conda "${moduleDir}/environment.yml"
 
 
   input:
