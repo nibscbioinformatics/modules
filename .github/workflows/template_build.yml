@@ -15,9 +15,9 @@ jobs:
       - name: Build and push Docker images
         uses: docker/build-push-action@v1.1.0
         with:
-          username: nibscbioinformatics
+          username: ${{ secrets.GITPACKAGE_USER }}
           password: ${{ secrets.GITPACKAGE_TOKEN }}
-          repository: docker.pkg.github.com/nibscbioinformatics/template
+          repository: docker.pkg.github.com/nibscbioinformatics/modules/template
           tag_with_sha: true
           path: ./software/template
           always_pull: false
