@@ -13,7 +13,6 @@ process READSAMPLE {
                   else filename }
 
   container "quay.io/biocontainers/nextflow:20.04.1--hecda079_1"
-
   conda (params.conda ? "${moduleDir}/environment.yml" : null)
 
 

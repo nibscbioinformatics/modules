@@ -7,5 +7,5 @@ channels:
   - bioconda
   - defaults
 dependencies:
-  - bash=5.0.011
-# WARNING no software to be installed a this time so we just put bash
+  - nextflow=20.04.1
+# WARNING no software to be installed a this time so we just put nextflow
