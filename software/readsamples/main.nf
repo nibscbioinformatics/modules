@@ -27,7 +27,7 @@ process READSAMPLE {
     file(samplesheet)
 
     output:
-    val(inputSample) emit: sampledata
+    val(inputSample), emit: sampledata
 
     script:
 
