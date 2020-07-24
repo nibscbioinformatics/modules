@@ -1,3 +1,10 @@
+---
+name: Bug report
+about: Use this template to report a bug.
+title: "[DATE]: [BUG NAME]"
+labels: bug, needs triage
+---
+
 # nibscbioinformatics/modules bug report
 
 Hi there!

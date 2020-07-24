@@ -1,3 +1,10 @@
+---
+name: Project task
+about: Use this template for tracking new features.
+title: "[DATE]: [FEATURE NAME]"
+labels: tracking issue, needs triage
+---
+
 # NIBSC Bioinformatics Dev Task
 
 *Please use this template to describe briefly the task, and delete any text that might not be relevant.*
