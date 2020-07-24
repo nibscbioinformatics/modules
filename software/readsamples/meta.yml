@@ -1,24 +1,9 @@
-name: FastQC
+name: SAMPLEREADING
 description: Run FastQC on sequenced reads
 keywords:
-  - Quality Control
-  - QC
-tools:
-  - fastqc:
-      description: |
-        FastQC produces a complete reports with metrics on your sequencing reads
-        that help assessing the quality of your sequences and identify potential
-        problems with the data. In particular, base quality, GC content as well as
-        duplication levels and overrepresented sequences will help identifying how
-        to inform any following step (for example, trimming).
-      homepage: https://www.bioinformatics.babraham.ac.uk/projects/fastqc/
-      documentation: https://www.bioinformatics.babraham.ac.uk/projects/fastqc/Help/
+  - Sample Processing
+  - Parsing
 params:
-  - params.modules['fastqc'].args:
-      type: string
-      description: Additional command line arguments passed to fastqc
-        these are expected to be defined in a structured format under params.modules{}
-        in the nextflow.config file
   - out_dir:
       type: string
       description: |
@@ -48,32 +33,13 @@ params:
       or paired-end (false).
     default: false
 input:
-  - meta:
-      type: map
-      description: |
-        The value is passed in a tuple, with the reads.
-        This is a groovy map containing sample metadata which is
-        generated in the main script. The following fields are expected
-        by the module:
-      - sampleID:
-        type: string
-        description: Sample identifier
-  - reads:
+  - samplesheet:
       type: file
       description: |
-        The list is passed in a tuple with the sample metadata (meta).
-        List of input FastQ files of size 1 and 2 for single-end and paired-end data,
-        respectively.
+        Sample sheet containing information about sample identifier and other columns,
+        and including path (one per column) of the forward and reverse reads.
 output:
-  - html:
+  - sampledata:
       type: tuple
-      description: Metadata map (meta) together with FastQC report (type: file)
-      pattern: "*_fastqc.html"
-  - zip:
-      type: tuple
-      description: Metadata map (meta) together with FastQC report (type: file)
-      pattern: "*_fastqc.zip"
-  - version:
-      type: file
-      description: software version
-      pattern: "*.version.txt"
+      description: Sample sheet containing 2 structures: a map [:] with sample metadata
+        and an array [,] containing the path(s) to the read file(s).

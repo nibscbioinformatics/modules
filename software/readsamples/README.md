@@ -1,12 +1,12 @@
-# Nextflow Module Template
+# Nextflow Module READSAMPLE
 
-![Test Template](https://github.com/nibscbioinformatics/modules/workflows/Test%20Template/badge.svg)
-![Docker Build & Push](https://github.com/nibscbioinformatics/modules/workflows/Docker%20Build%20&%20Push/badge.svg)
 
-## Add Software information
+## Software information
 
-Here some more information should be added, using what has been collected in the YAML file
+No particular software is used by this module, other than groovy language within Nextflow.
 
 ## Add information about the process
 
-It is important to describe the script in the process, and in particular expected inputs and outputs, using the information structured in the YAML file.
+The module simply processes a tab-separated sample information file, and provides other modules in a Nextflow workflow with a tuple composed by sample metadata and read path information.
+
+The module only expects the path to the TSV file, and standard params incuding single_end, a boolean indicating if the experiment is single-ended or paired-ended squencing.

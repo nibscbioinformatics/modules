@@ -1,8 +1,8 @@
-def MODULE = "template"
+def MODULE = "READSAMPLE"
 params.publish_dir = MODULE
-params.publish_results = "default"
+params.publish_results = "none"
 
-process FASTQC {
+process READSAMPLE {
     // each module must define a process label to declare a category of
     // resource requirements
     label 'process_low'
@@ -16,44 +16,61 @@ process FASTQC {
     //container "docker.pkg.github.com/nibscbioinformatics/$MODULE"
     // need to use biocontainers because of problem with github registry
     // requesting o-auth
-    container "quay.io/biocontainers/fastqc:0.11.9--0" // TODO -> change with appropriate biocontainer
+    container "quay.io/biocontainers/nextflow:20.04.1--hecda079_1" // TODO -> change with appropriate biocontainer
     // alternatively, now we can choose "nibscbioinformatics/modules:software-version" which is built
     // automatically from the containers definitions
 
     conda (params.conda ? "${moduleDir}/environment.yml" : null)
 
 
-  input:
-  // --> meta is a Groovy MAP containing any number of information (metadata) per sample
-  // or analysis unit, corresponding to each of "reads"
-  // it is accessible via meta.name where ".name" is the name of the metadata
-  // these MUST be described in the meta.yml when the metatada are expected by the process
-  tuple val(meta), path(reads)
+    input:
+    file(samplesheet)
 
-  // configuration parameters are accessible via
-  // params.modules['modulename'].name
-  // where "name" is the name of parameter, and defined in nextflow.config
+    output:
+    val(inputSample) emit: sampledata
 
-  output:
-  tuple val(meta), path("*.html"), emit: html
-  tuple val(meta), path("*.zip"), emit: zip
-  path "*.version.txt", emit: version
+    script:
 
-  script:
-  // elegant solution as implemented by nf-core
-  // all credits to original authors :)
-  if (params.single_end) {
-      """
-      [ ! -f  ${meta.sampleID}.fastq.gz ] && ln -s $reads ${meta.sampleID}.fastq.gz
-      fastqc ${params.modules['fastqc'].args} --threads $task.cpus ${meta.sampleID}.fastq.gz
-      fastqc --version | sed -n "s/.*\\(v.*\$\\)/\\1/p" > fastqc.version.txt
-      """
-  } else {
-      """
-      [ ! -f  ${meta.sampleID}_1.fastq.gz ] && ln -s ${reads[0]} ${meta.sampleID}_1.fastq.gz
-      [ ! -f  ${meta.sampleID}_2.fastq.gz ] && ln -s ${reads[1]} ${meta.sampleID}_2.fastq.gz
-      fastqc ${params.modules['fastqc'].args} --threads $task.cpus ${meta.sampleID}_1.fastq.gz ${meta.sampleID}_2.fastq.gz
-      fastqc --version | sed -n "s/.*\\(v.*\$\\)/\\1/p" > fastqc.version.txt
-      """
-  }
+    def checkExtension(file, extension) {
+        file.toString().toLowerCase().endsWith(extension.toLowerCase())
+    }
+
+    def checkFile(filePath, extension) {
+      // first let's check if has the correct extension
+      if (!checkExtension(filePath, extension)) exit 1, "File: ${filePath} has the wrong extension. See --help for more information"
+      // then we check if the file exists
+      if (!file(filePath).exists()) exit 1, "Missing file in TSV file: ${filePath}, see --help for more information"
+      // if none of the above has thrown an error, return the file
+      return(file(filePath))
+    }
+
+    // the function expects a tab delimited sample sheet, with a header in the first line
+    // the header will name the variables and therefore there are a few mandatory names
+    // sampleID to indicate the sample name or unique identifier
+    // read1 to indicate read_1.fastq.gz, i.e. R1 read or forward read
+    // read2 to indicate read_2.fastq.gz, i.e. R2 read or reverse read
+    // any other column should fulfill the requirements of modules imported in main
+    // the function also expects a boolean for single or paired end reads from params
+
+    def readInputFile(tsvFile, single_end) {
+        Channel.from(tsvFile)
+            .splitCsv(header:true, sep: '\t')
+            .map { row ->
+                def meta = [:]
+                def reads = []
+                def sampleinfo = []
+                meta.sampleID = row.sampleID
+                if (single_end) {
+                  reads = checkFile(row.read1, "fastq.gz")
+                } else {
+                  reads = [ checkFile(row.read1, "fastq.gz"), checkFile(row.read2, "fastq.gz") ]
+                }
+                sampleinfo = [ meta, reads ]
+                return sampleinfo
+            }
+    }
+
+    inputSample = Channel.empty()
+    inputSample = readInputFile(samplesheet, params.single_end)
+
 }
