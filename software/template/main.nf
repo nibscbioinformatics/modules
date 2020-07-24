@@ -17,6 +17,8 @@ process FASTQC {
     // need to use biocontainers because of problem with github registry
     // requesting o-auth
     container "quay.io/biocontainers/fastqc:0.11.9--0" // TODO -> change with appropriate biocontainer
+    // alternatively, now we can choose "nibscbioinformatics/modules:software-version" which is built
+    // automatically from the containers definitions
 
     conda (params.conda ? "${moduleDir}/environment.yml" : null)
 

@@ -15,9 +15,8 @@ jobs:
       - name: Build and Push to GitHub Packages
         uses: docker/build-push-action@v1
         with:
-          username: ${{ github.actor }}
-          password: ${{ secrets.GITHUB_TOKEN }}
-          registry: docker.pkg.github.com
-          repository: nibscbioinformatics/modules/template # TODO -> change "template" with your module name
+          username: ${{ secrets.DOCKERHUB_USER }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+          repository: nibscbioinformatics/modules
+          tags: template-test # TODO -> change "template" with your module name and "test" with software version
           path: ./software/template # TODO --> change "template" with your module name
-          tag_with_ref: true
