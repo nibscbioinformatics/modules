@@ -17,6 +17,6 @@ jobs:
         with:
           username: ${{ secrets.DOCKERHUB_USER }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
-          repository: nibscbioinformatics/modules
+          repository: nibscbioinformatics/nf-modules
           tags: template-test # TODO -> change "template" with your module name and "test" with software version
           path: ./software/template # TODO --> change "template" with your module name

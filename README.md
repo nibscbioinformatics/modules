@@ -159,6 +159,9 @@ Then, the **Dockerfile** should be modified to change the *PATH* with the name o
 
 All files contain comments, which should help identifying the changes to be introduced.
 
+The container will be built and uploaded to [Docker Hub](https://hub.docker.com/repository/docker/nibscbioinformatics/nf-modules) under the repository **nf-modules**: in order to distinguish the different containers, the **tag** will identify the *software* (module name) and the *version* separated by "*-*".
+This is not exactly compliant to nf-core practices, which are currently evolving. The most compliant way, is to use a biocontainer, as explained above.
+
 
 ### Modify the module code
 
