@@ -1,8 +1,8 @@
-def MODULE = "template"
-params.publish_dir = MODULE
+def MODULE = "flash"
+params.publish_dir = FLASH
 params.publish_results = "default"
 
-process FASTQC {
+process FLASH {
     // each module must define a process label to declare a category of
     // resource requirements
     label 'process_low'
@@ -16,7 +16,7 @@ process FASTQC {
     //container "docker.pkg.github.com/nibscbioinformatics/$MODULE"
     // need to use biocontainers because of problem with github registry
     // requesting o-auth
-    container "quay.io/biocontainers/fastqc:0.11.9--0" // TODO -> change with appropriate biocontainer
+    container "quay.io/biocontainers/flash:1.2.11--hed695b0_5" // TODO -> change with appropriate biocontainer
     // alternatively, now we can choose "nibscbioinformatics/modules:software-version" which is built
     // automatically from the containers definitions
 
@@ -40,20 +40,8 @@ process FASTQC {
   path "*.version.txt", emit: version
 
   script:
-  // elegant solution as implemented by nf-core
-  // all credits to original authors :)
-  if (params.single_end) {
-      """
-      [ ! -f  ${meta.sampleID}.fastq.gz ] && ln -s $reads ${meta.sampleID}.fastq.gz
-      fastqc ${params.modules['fastqc'].args} --threads $task.cpus ${meta.sampleID}.fastq.gz
-      fastqc --version | sed -n "s/.*\\(v.*\$\\)/\\1/p" > fastqc.version.txt
-      """
-  } else {
-      """
-      [ ! -f  ${meta.sampleID}_1.fastq.gz ] && ln -s ${reads[0]} ${meta.sampleID}_1.fastq.gz
-      [ ! -f  ${meta.sampleID}_2.fastq.gz ] && ln -s ${reads[1]} ${meta.sampleID}_2.fastq.gz
-      fastqc ${params.modules['fastqc'].args} --threads $task.cpus ${meta.sampleID}_1.fastq.gz ${meta.sampleID}_2.fastq.gz
-      fastqc --version | sed -n "s/.*\\(v.*\$\\)/\\1/p" > fastqc.version.txt
-      """
-  }
+  // flash is meant to merge reads, so this should only be used
+  // when paired-end sequencing has bene done
+
+  
 }
