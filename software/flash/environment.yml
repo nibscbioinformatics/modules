@@ -5,4 +5,4 @@ channels:
   - bioconda
   - defaults
 dependencies:
-  - flash==1.2.11--hed695b0_5
+  - bioconda::flash==1.2.11
