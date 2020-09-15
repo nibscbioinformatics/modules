@@ -6,10 +6,10 @@ on:
     branches:
       - flash
       - master
-
-    # Publish `v1.2.3` tags as releases.
-    tags:
-      - v*
+    paths: # TODO --> modify "template" below to refer to your module and your new action
+      - software/flash/Dockerfile
+      - software/flash/environment.yml
+      - .github/workflows/flash_build.yml
 
   # Run tests for any PRs.
   pull_request:
@@ -20,16 +20,8 @@ env:
   SOFTWARE: flash
 
 jobs:
-  # Run tests.
-  # See also https://docs.docker.com/docker-hub/builds/automated-testing/
-  push:
-    paths: # TODO --> modify "template" below to refer to your module and your new action
-      - software/flash/Dockerfile
-      - software/flash/environment.yml
-      - .github/workflows/flash_build.yml
+  build:
     runs-on: ubuntu-latest
-    if: github.event_name == 'push'
-
     steps:
       - uses: actions/checkout@v2
 
@@ -37,7 +29,6 @@ jobs:
         run: docker build ./software/template --file Dockerfile --tag $SOFTWARE
 
       - name: Log into GitHub Container Registry
-      # TODO: Create a PAT with `read:packages` and `write:packages` scopes and save it as an Actions secret `CR_PAT`
         run: echo "${{ secrets.CR_PAT }}" | docker login https://ghcr.io -u ${{ github.actor }} --password-stdin
 
       - name: Push image to GitHub Container Registry
