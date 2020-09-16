@@ -1,5 +1,5 @@
 def MODULE = "flash"
-params.publish_dir = FLASH
+params.publish_dir = MODULE
 params.publish_results = "default"
 
 process FLASH {
