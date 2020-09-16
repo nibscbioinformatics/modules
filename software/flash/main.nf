@@ -39,7 +39,7 @@ process FLASH {
   // when paired-end sequencing has bene done
   """
   flash \
-  -t {task.cpus} \
+  -t ${task.cpus} \
   --quiet \
   -o ${meta.sampleID} \
   -z --max-overlap 300 \
