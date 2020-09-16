@@ -13,7 +13,11 @@ workflow {
   input = file("${baseDir}/data/test_samples.tsv")
   inputSample = Channel.empty()
   inputSample = readInputFile(input, params.single_end)
-  def options = "" // fake options - should be a groovy map but ok for testing now
+  
+  // fake options - should be a groovy map but ok for testing now
+  def Map options = [:]
+  options.args = ''
+  options.args2 = ''
 
   FASTQC(inputSample, options)
 

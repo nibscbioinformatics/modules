@@ -12,8 +12,13 @@ workflow {
   input = file("${baseDir}/data/test_samples.tsv")
   inputSample = Channel.empty()
   inputSample = readInputFile(input, params.single_end)
+  
+  // fake options - should be a groovy map but ok for testing now
+  def Map options = [:]
+  options.args = ''
+  options.args2 = ''
 
-  FLASH(inputSample)
+  FLASH(inputSample, options)
 
   // ## IMPORTANT this is a test workflow
   // so a test should always been implemented to check
