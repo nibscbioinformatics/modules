@@ -1,0 +1,34 @@
+name: Test FLASH
+on:
+  push:
+    paths:
+      - software/flash/**
+      - .github/workflows/flash_test.yml
+  pull_request:
+    paths:
+      - software/flash/**
+      - .github/workflows/flash_test.yml
+
+jobs:
+  ci_test:
+    runs-on: ubuntu-latest
+    env:
+      NXF_ANSI_LOG: false
+    steps:
+
+    - uses: actions/checkout@v2
+
+    - name: Install Nextflow
+      run: |
+        export NXF_VER="20.06.0-edge"
+        wget -qO- get.nextflow.io | bash
+        sudo mv nextflow /usr/local/bin/
+
+    # Test the module
+    - name: Run with conda
+      run: |
+        nextflow run ./software/flash/test/ --conda true
+
+    - name: Run with docker
+      run: |
+        nextflow run ./software/flash/test/ -profile docker

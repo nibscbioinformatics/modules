@@ -31,7 +31,7 @@ process FLASH {
   // where "name" is the name of parameter, and defined in nextflow.config
 
   output:
-  tuple val(meta), path("*.extendedFrags.fastq.gz"), emit: reads
+  tuple val(meta), path("${meta.sampleID}.extendedFrags.fastq.gz"), emit: reads
   path "*.version.txt", emit: version
 
   script:
