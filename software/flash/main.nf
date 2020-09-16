@@ -13,12 +13,8 @@ process FLASH {
                     if (params.publish_results == "none") null
                     else filename }
 
-    //container "docker.pkg.github.com/nibscbioinformatics/$MODULE"
-    // need to use biocontainers because of problem with github registry
-    // requesting o-auth
-    container "quay.io/biocontainers/flash:1.2.11--hed695b0_5" // TODO -> change with appropriate biocontainer
-    // alternatively, now we can choose "nibscbioinformatics/modules:software-version" which is built
-    // automatically from the containers definitions
+    //container "ghcr.io/nibscbioinformatics/flash:1.2.11"
+    container "quay.io/biocontainers/flash:1.2.11--hed695b0_5"
 
     conda (params.conda ? "${moduleDir}/environment.yml" : null)
 
@@ -35,13 +31,22 @@ process FLASH {
   // where "name" is the name of parameter, and defined in nextflow.config
 
   output:
-  tuple val(meta), path("*.html"), emit: html
-  tuple val(meta), path("*.zip"), emit: zip
+  tuple val(meta), path("*.extendedFrags.fastq.gz"), emit: reads
   path "*.version.txt", emit: version
 
   script:
   // flash is meant to merge reads, so this should only be used
   // when paired-end sequencing has bene done
+  """
+  flash \
+  -t {task.cpus} \
+  --quiet \
+  -o ${meta.sampleID} \
+  -z --max-overlap 300 \
+  ${reads[0]} ${reads[1]}
 
-  
+  flash -v | head -n 1 | cut -d" " -f 2 >flash.version.txt
+  """
+
+
 }
