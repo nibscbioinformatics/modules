@@ -1,7 +1,7 @@
 # FLASH
 
-![Test Template](https://github.com/nibscbioinformatics/modules/workflows/Test%20Template/badge.svg)
-![Docker Build & Push](https://github.com/nibscbioinformatics/modules/workflows/Docker%20Build%20&%20Push/badge.svg)
+![Test FLASH](https://github.com/nibscbioinformatics/modules/workflows/Test%20FLASH/badge.svg)
+![Build FLASH](https://github.com/nibscbioinformatics/modules/workflows/Build%20FLASH/badge.svg)
 
 ## Software information
 
@@ -52,7 +52,7 @@ They can also improve transcriptome assembly when FLASH is used to merge RNA-seq
       type: file
       description: Single fastq file with merged reads, output from flash.
       pattern: "*_fastqc.gz"
-      
+
   - version:
       type: file
       description: software version
