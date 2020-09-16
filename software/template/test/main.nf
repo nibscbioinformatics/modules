@@ -13,8 +13,9 @@ workflow {
   input = file("${baseDir}/data/test_samples.tsv")
   inputSample = Channel.empty()
   inputSample = readInputFile(input, params.single_end)
+  def options = "" // fake options - should be a groovy map but ok for testing now
 
-  FASTQC(inputSample)
+  FASTQC(inputSample, options)
 
   // ## IMPORTANT this is a test workflow
   // so a test should always been implemented to check
