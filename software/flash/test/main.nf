@@ -22,7 +22,7 @@ workflow {
   FLASH.out.reads.map { map, reads ->
 
     assert reads.exists()
-    assert reads.getExtension() == "fastq.gz"
+    assert reads.getExtension() == "gz"
 
   }
 
