@@ -41,6 +41,11 @@ params:
         this is a groovy map [:] which can be used to pass arguments for
         the software in use. it is processes by default function in nf-core
         module template
+      - max_overlap:
+          type: integer
+          description: |
+            maximum overlap in bases between forward and reverse read
+            to be passed as argument to flash tool
 
 input:
   - meta:
@@ -59,6 +64,7 @@ input:
         The list is passed in a tuple with the sample metadata (meta).
         List of input FastQ files of size 1 and 2 for single-end and paired-end data,
         respectively.
+        
 output:
   - reads:
       type: file

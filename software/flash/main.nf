@@ -39,7 +39,7 @@ process FLASH {
   -t ${task.cpus} \
   --quiet \
   -o ${meta.sampleID} \
-  -z --max-overlap 300 \
+  -z --max-overlap ${options.max_overlap} \
   ${reads[0]} ${reads[1]}
 
   flash -v | head -n 1 | cut -d" " -f 2 >flash.version.txt

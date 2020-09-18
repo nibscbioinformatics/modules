@@ -12,11 +12,12 @@ workflow {
   input = file("${baseDir}/data/test_samples.tsv")
   inputSample = Channel.empty()
   inputSample = readInputFile(input, params.single_end)
-  
+
   // fake options - should be a groovy map but ok for testing now
   def Map options = [:]
   options.args = ''
   options.args2 = ''
+  options.max_overlap = 300
 
   FLASH(inputSample, options)
 
