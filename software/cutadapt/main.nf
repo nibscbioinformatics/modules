@@ -39,8 +39,8 @@ process CUTADAPT {
   val options
 
   output:
-  tuple val(meta), path("*.fastq.gz"), emit: reads
-  tuple val(meta), path("*_trim*"), emit: logs
+  tuple val(meta), path("*_trimmed.fastq.gz"), emit: reads
+  tuple val(meta), path("*_trim.*"), emit: logs
   path "*.version.txt", emit: version
 
   script:
@@ -51,7 +51,7 @@ process CUTADAPT {
     cutadapt \
     -a file:${options.adapterfile3} \
     -g file:${options.adapterfile5} \
-    -o ${sampleprefix}_L001_R1_001.trimmed.fastq.gz \
+    -o ${sampleprefix}_R1_trimmed.fastq.gz \
     ${reads[0]} \
     ${cutopts.args} \
     > ${meta.sampleID}.trim.out \

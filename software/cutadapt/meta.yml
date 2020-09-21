@@ -6,24 +6,26 @@ keywords:
 tools:
   - fastqc:
       description: |
-        FastQC produces a complete reports with metrics on your sequencing reads
-        that help assessing the quality of your sequences and identify potential
-        problems with the data. In particular, base quality, GC content as well as
-        duplication levels and overrepresented sequences will help identifying how
-        to inform any following step (for example, trimming).
-      homepage: https://www.bioinformatics.babraham.ac.uk/projects/fastqc/
-      documentation: https://www.bioinformatics.babraham.ac.uk/projects/fastqc/Help/
+        Cutadapt finds and removes adapter sequences, primers,
+        poly-A tails and other types of unwanted sequence from
+        high-throughput sequencing reads. It also trims the reads base
+        on quality thresholds or desired length.
+      homepage: https://pypi.org/project/cutadapt/
+      documentation: https://cutadapt.readthedocs.io/en/stable/index.html
 params:
-  - params.modules['fastqc'].args:
+  - params.modules['cutadapt'].adapterfile5:
       type: string
-      description: Additional command line arguments passed to fastqc
-        these are expected to be defined in a structured format under params.modules{}
-        in the nextflow.config file
-  - out_dir:
+      description: file containing adapter sequences
+        to be removed from the 5 prime side of the reads
+  - params.modules['cutadapt'].adapterfile3:
+      type: string
+      description: file containing adapter sequences
+        to be removed from the 3 prime side of the reads
+  - outdir:
       type: string
       description: |
         The pipeline's output directory. By default, the module will
-        output files into `$out_dir/MODULE_NAME`
+        output files into `$out_dir/cutadapt`
   - publish_dir:
       type: string
       description: |
@@ -65,14 +67,14 @@ input:
         List of input FastQ files of size 1 and 2 for single-end and paired-end data,
         respectively.
 output:
-  - html:
+  - reads:
       type: tuple
-      description: Metadata map (meta) together with FastQC report (type: file)
-      pattern: "*_fastqc.html"
-  - zip:
+      description: Metadata map (meta) together with trimmed read(s) (type: file)
+      pattern: "*_trimmed.fastq.gz"
+  - logs:
       type: tuple
-      description: Metadata map (meta) together with FastQC report (type: file)
-      pattern: "*_fastqc.zip"
+      description: Metadata map (meta) together with FastQC logs (type: file)
+      pattern: "*_trim.out" | "*_trim.err"
   - version:
       type: file
       description: software version
