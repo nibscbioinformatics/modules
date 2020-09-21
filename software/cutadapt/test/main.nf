@@ -22,8 +22,8 @@ workflow {
 
   // fake options - should be a groovy map but ok for testing now
   def Map options = [:]
-  options.args = "-q ${params.trim_quality} --minimum-length ${params.trim_minlength} --times ${params.trim_adaptertime} -e ${params.trim_maxerror} --max-n ${params.trim_maxn}"
-  options.args2 = "-q ${params.trim_quality},${params.trim_quality} --minimum-length ${params.trim_minlength} --times ${params.trim_adaptertime} -e ${params.trim_maxerror} --max-n ${params.trim_maxn}"
+  options.args = "-q ${params.trim_quality} --minimum-length ${params.trim_minlength} --times ${params.trim_adaptertimes} -e ${params.trim_maxerror} --max-n ${params.trim_maxn}"
+  options.args2 = "-q ${params.trim_quality},${params.trim_quality} --minimum-length ${params.trim_minlength} --times ${params.trim_adaptertimes} -e ${params.trim_maxerror} --max-n ${params.trim_maxn}"
   options.adapterfile3 = params.adapterfile
   options.adapterfile5 = params.adapterfile
 
