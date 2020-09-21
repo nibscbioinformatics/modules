@@ -10,7 +10,7 @@ params.trim_minlength = 50
 params.trim_adaptertimes = 2
 params.trim_maxerror = 0.1
 params.trim_maxn = 0.4
-params.adapterfile = file("${baseDir}/data/adapter.fa")
+params.adapterfile = file("${baseDir}/data/adapters.fa")
 
 include { CUTADAPT } from '../main.nf' params(params)
 
@@ -24,8 +24,8 @@ workflow {
   def Map options = [:]
   options.args = "-q ${params.trim_quality} --minimum-length ${params.trim_minlength} --times ${params.trim_adaptertime} -e ${params.trim_maxerror} --max-n ${params.trim_maxn}"
   options.args2 = "-q ${params.trim_quality},${params.trim_quality} --minimum-length ${params.trim_minlength} --times ${params.trim_adaptertime} -e ${params.trim_maxerror} --max-n ${params.trim_maxn}"
-  options.adapterfile3 =
-  options.adapterfile5 =
+  options.adapterfile3 = params.adapterfile
+  options.adapterfile5 = params.adapterfile
 
   CUTADAPT(inputSample, options)
 
