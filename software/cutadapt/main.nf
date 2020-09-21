@@ -49,7 +49,7 @@ process CUTADAPT {
   if (params.single_end) {
     """
     cutadapt \
-    -j {$task.cpus} \
+    -j ${task.cpus} \
     -a file:${options.adapterfile3} \
     -g file:${options.adapterfile5} \
     -o ${sampleprefix}_R1_trimmed.fastq.gz \
@@ -63,7 +63,7 @@ process CUTADAPT {
   } else {
     """
     cutadapt \
-    -j {$task.cpus} \
+    -j ${task.cpus} \
     -a file:${options.adapterfile3} \
     -A file:${options.adapterfile3} \
     -g file:${options.adapterfile5} \
