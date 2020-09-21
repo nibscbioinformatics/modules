@@ -34,12 +34,13 @@ process FLASH {
   script:
   // flash is meant to merge reads, so this should only be used
   // when paired-end sequencing has bene done
+  def flashopts  = initOptions(options)
   """
   flash \
   -t ${task.cpus} \
   --quiet \
   -o ${meta.sampleID} \
-  -z --max-overlap ${options.max_overlap} \
+  -z ${flashopts.args} \
   ${reads[0]} ${reads[1]}
 
   flash -v | head -n 1 | cut -d" " -f 2 >flash.version.txt

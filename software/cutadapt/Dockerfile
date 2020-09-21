@@ -12,4 +12,4 @@ RUN conda env create -f /environment.yml && conda clean -a
 # Add conda installation dir to PATH (instead of doing 'conda activate')
 # TODO ->>> change the path here indicated by "xxx" [/envs/]xxxx[/bin:$PATH] with the very same name
 # given into the environment.yml file
-ENV PATH /usr/local/envs/nibscbioinformatics-modules-fastqc/bin:$PATH
+ENV PATH /usr/local/envs/nibscbioinformatics-modules-cutadapt/bin:$PATH

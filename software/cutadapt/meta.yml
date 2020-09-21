@@ -1,5 +1,5 @@
-name: FastQC
-description: Run FastQC on sequenced reads
+name: cutadapt
+description: Run cutadapt on sequenced reads
 keywords:
   - Quality Control
   - QC

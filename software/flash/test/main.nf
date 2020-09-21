@@ -4,6 +4,7 @@ params.out_dir = "test_output"
 params.publish_dir_mode = "copy"
 params.single_end = false
 params.conda = false
+params.flash_max_overlap = 300
 
 include { FLASH } from '../main.nf' params(params)
 
@@ -15,9 +16,8 @@ workflow {
 
   // fake options - should be a groovy map but ok for testing now
   def Map options = [:]
-  options.args = ''
+  options.args = "--max-overlap ${params.flash_max_overlap}"
   options.args2 = ''
-  options.max_overlap = 300
 
   FLASH(inputSample, options)
 
