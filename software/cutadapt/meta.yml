@@ -1,23 +1,31 @@
-name: FLASH
-description: Run Flash on sequenced reads
+name: cutadapt
+description: Run cutadapt on sequenced reads
 keywords:
-  - Merge
-  - reads
+  - Quality Control
+  - QC
 tools:
-  - flash:
+  - fastqc:
       description: |
-        FLASH (Fast Length Adjustment of SHort reads) is a software tool to merge paired-end reads
-        from next-generation sequencing experiments.
-        FLASH is designed to merge pairs of reads when the original DNA fragments are shorter than
-        twice the length of reads. The resulting longer reads can significantly improve genome assemblies.
-        They can also improve transcriptome assembly when FLASH is used to merge RNA-seq data.
-      homepage: https://ccb.jhu.edu/software/FLASH/
+        Cutadapt finds and removes adapter sequences, primers,
+        poly-A tails and other types of unwanted sequence from
+        high-throughput sequencing reads. It also trims the reads base
+        on quality thresholds or desired length.
+      homepage: https://pypi.org/project/cutadapt/
+      documentation: https://cutadapt.readthedocs.io/en/stable/index.html
 params:
-  - out_dir:
+  - params.modules['cutadapt'].adapterfile5:
+      type: string
+      description: file containing adapter sequences
+        to be removed from the 5 prime side of the reads
+  - params.modules['cutadapt'].adapterfile3:
+      type: string
+      description: file containing adapter sequences
+        to be removed from the 3 prime side of the reads
+  - outdir:
       type: string
       description: |
         The pipeline's output directory. By default, the module will
-        output files into `$out_dir/MODULE_NAME`
+        output files into `$out_dir/cutadapt`
   - publish_dir:
       type: string
       description: |
@@ -35,18 +43,12 @@ params:
         Whether or not to publish results into `publish_dir`. Set to `none` to not
         publish any files at all; to `default` to publish all relevant files.
       default: set to 'default', i.e. publishes all relevant files.
-  - options:
-      type: map
-      description: |
-        this is a groovy map [:] which can be used to pass arguments for
-        the software in use. it is processes by default function in nf-core
-        module template
-      - max_overlap:
-          type: integer
-          description: |
-            maximum overlap in bases between forward and reverse read
-            to be passed as argument to flash tool
-
+  - single_end:
+    type: boolean
+    description: |
+      Boolean indicating whether the corresponding sample is single-end (true)
+      or paired-end (false).
+    default: false
 input:
   - meta:
       type: map
@@ -64,12 +66,15 @@ input:
         The list is passed in a tuple with the sample metadata (meta).
         List of input FastQ files of size 1 and 2 for single-end and paired-end data,
         respectively.
-        
 output:
   - reads:
-      type: file
-      description: Single fastq file with merged reads, output from flash.
-      pattern: "*_fastqc.gz"
+      type: tuple
+      description: Metadata map (meta) together with trimmed read(s) (type: file)
+      pattern: "*_trimmed.fastq.gz"
+  - logs:
+      type: tuple
+      description: Metadata map (meta) together with FastQC logs (type: file)
+      pattern: "*_trim.out" | "*_trim.err"
   - version:
       type: file
       description: software version

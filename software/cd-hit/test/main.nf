@@ -3,10 +3,12 @@
 nextflow.preview.dsl = 2
 params.outdir = "test_output"
 params.publish_dir_mode = "copy"
-params.single_end = false
+params.single_end = true
 params.conda = false
 
-include { FASTQC } from '../main.nf' params(params)
+params.cdhit_seq_identity = 0.9
+
+include { CDHIT } from '../main.nf' params(params)
 
 
 workflow {
@@ -16,23 +18,19 @@ workflow {
 
   // fake options - should be a groovy map but ok for testing now
   def Map options = [:]
-  options.args = ''
+  options.args = "-c ${params.cdhit_seq_identity}"
   options.args2 = ''
 
-  FASTQC(inputSample, options)
+  CDHIT(inputSample, options)
 
   // ## IMPORTANT this is a test workflow
   // so a test should always been implemented to check
   // the output corresponds to what expected
 
-  FASTQC.out.html.map { map, reports ->
-    html_read1 = reports[0]
-    html_read2 = reports[1]
+  CDHIT.out.clusters.map { map, clusters ->
 
-    assert html_read1.exists()
-    assert html_read2.exists()
-    assert html_read1.getExtension() == "html"
-    assert html_read2.getExtension() == "html"
+    assert clusters.exists()
+    assert clusters.getExtension() == "clusters"
 
   }
 
@@ -78,9 +76,9 @@ def readInputFile(tsvFile, single_end) {
             def sampleinfo = []
             meta.sampleID = row.sampleID
             if (single_end) {
-              reads = checkFile(row.read1, "fastq.gz")
+              reads = checkFile(row.read1, "fasta")
             } else {
-              reads = [ checkFile(row.read1, "fastq.gz"), checkFile(row.read2, "fastq.gz") ]
+              reads = [ checkFile(row.read1, "fasta"), checkFile(row.read2, "fasta") ]
             }
             sampleinfo = [ meta, reads ]
             return sampleinfo

@@ -1,12 +1,11 @@
-def MODULE = "flash"
+def MODULE = "cd-hit"
 params.publish_dir = MODULE
 params.publish_results = "default"
 
 // Import generic module functions
 include { initOptions; saveFiles; getSoftwareName } from './functions'
 
-
-process FLASH {
+process CDHIT {
     // each module must define a process label to declare a category of
     // resource requirements
     label 'process_low'
@@ -17,34 +16,33 @@ process FLASH {
           saveFiles(filename:filename, options:options, publish_dir:getSoftwareName(task.process), publish_id:meta.sampleID)
         }
 
-    //container "ghcr.io/nibscbioinformatics/flash:1.2.11"
-    container "quay.io/biocontainers/flash:1.2.11--hed695b0_5"
+    container "biocontainers/cd-hit:v4.6.8-2-deb_cv1"
 
     conda (params.conda ? "${moduleDir}/environment.yml" : null)
 
 
   input:
+  // --> meta is a Groovy MAP containing any number of information (metadata) per sample
+  // or analysis unit, corresponding to each of "reads"
+  // it is accessible via meta.name where ".name" is the name of the metadata
+  // these MUST be described in the meta.yml when the metatada are expected by the process
   tuple val(meta), path(reads)
+
   val options
 
   output:
-  tuple val(meta), path("${meta.sampleID}.extendedFrags.fastq.gz"), emit: reads
+  tuple val(meta), path("*.clusters"), emit: clusters
   path "*.version.txt", emit: version
 
   script:
-  // flash is meant to merge reads, so this should only be used
-  // when paired-end sequencing has bene done
-  def flashopts  = initOptions(options)
   """
-  flash \
-  -t ${task.cpus} \
-  --quiet \
-  -o ${meta.sampleID} \
-  -z ${flashopts.args} \
-  ${reads[0]} ${reads[1]}
+  cd-hit \
+  -i ${reads} \
+  -o ${meta.sampleID}.aa.clusters \
+  ${options.args} \
+  -T ${task.cpus} \
+  -M ${task.memory.toMega()}
 
-  flash -v | head -n 1 | cut -d" " -f 2 >flash.version.txt
+  cd-hit -h | head -n1 | cut -d" " -f4,5,6,7,8,9 >cd-hit.version.txt
   """
-
-
 }

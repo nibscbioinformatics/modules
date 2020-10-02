@@ -4,6 +4,7 @@ params.out_dir = "test_output"
 params.publish_dir_mode = "copy"
 params.single_end = false
 params.conda = false
+params.flash_max_overlap = 300
 
 include { FLASH } from '../main.nf' params(params)
 
@@ -12,10 +13,10 @@ workflow {
   input = file("${baseDir}/data/test_samples.tsv")
   inputSample = Channel.empty()
   inputSample = readInputFile(input, params.single_end)
-  
+
   // fake options - should be a groovy map but ok for testing now
   def Map options = [:]
-  options.args = ''
+  options.args = "--max-overlap ${params.flash_max_overlap}"
   options.args2 = ''
 
   FLASH(inputSample, options)
