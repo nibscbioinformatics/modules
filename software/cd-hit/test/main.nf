@@ -76,9 +76,9 @@ def readInputFile(tsvFile, single_end) {
             def sampleinfo = []
             meta.sampleID = row.sampleID
             if (single_end) {
-              reads = checkFile(row.read1, "fastq.gz")
+              reads = checkFile(row.read1, "fasta")
             } else {
-              reads = [ checkFile(row.read1, "fastq.gz"), checkFile(row.read2, "fastq.gz") ]
+              reads = [ checkFile(row.read1, "fasta"), checkFile(row.read2, "fasta") ]
             }
             sampleinfo = [ meta, reads ]
             return sampleinfo
