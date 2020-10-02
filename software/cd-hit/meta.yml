@@ -1,24 +1,14 @@
-name: FastQC
-description: Run FastQC on sequenced reads
+name: cd-hit
+description: Run CD-HIT on translated reads
 keywords:
-  - Quality Control
-  - QC
+  - Cluster Analysis
 tools:
-  - fastqc:
+  - cd-hit:
       description: |
-        FastQC produces a complete reports with metrics on your sequencing reads
-        that help assessing the quality of your sequences and identify potential
-        problems with the data. In particular, base quality, GC content as well as
-        duplication levels and overrepresented sequences will help identifying how
-        to inform any following step (for example, trimming).
-      homepage: https://www.bioinformatics.babraham.ac.uk/projects/fastqc/
-      documentation: https://www.bioinformatics.babraham.ac.uk/projects/fastqc/Help/
+        The software is used to cluster and compare either nucleotide or
+        protein sequences.
+      homepage: http://weizhongli-lab.org/cd-hit/
 params:
-  - params.modules['fastqc'].args:
-      type: string
-      description: Additional command line arguments passed to fastqc
-        these are expected to be defined in a structured format under params.modules{}
-        in the nextflow.config file
   - out_dir:
       type: string
       description: |
@@ -62,17 +52,13 @@ input:
       type: file
       description: |
         The list is passed in a tuple with the sample metadata (meta).
-        List of input FastQ files of size 1 and 2 for single-end and paired-end data,
-        respectively.
+        This should be a FASTA file with aminoacid sequences translated
+        from FASTQ files merged with FLASH.
 output:
-  - html:
+  - clusters:
       type: tuple
-      description: Metadata map (meta) together with FastQC report (type: file)
-      pattern: "*_fastqc.html"
-  - zip:
-      type: tuple
-      description: Metadata map (meta) together with FastQC report (type: file)
-      pattern: "*_fastqc.zip"
+      description: Metadata map (meta) together with cluster report (type: file)
+      pattern: "*.clusters"
   - version:
       type: file
       description: software version

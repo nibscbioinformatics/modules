@@ -1,12 +1,10 @@
-# Nextflow Module Template
+# CD-HIT MODULE
 
-![Test Template](https://github.com/nibscbioinformatics/modules/workflows/Test%20Template/badge.svg)
-![Docker Build & Push](https://github.com/nibscbioinformatics/modules/workflows/Docker%20Build%20&%20Push/badge.svg)
+## Software information
 
-## Add Software information
+The software is used to cluster and compare either nucleotide or protein sequences.
+More information is available at [cd-hit homepage](http://weizhongli-lab.org/cd-hit/)
 
-Here some more information should be added, using what has been collected in the YAML file
-
-## Add information about the process
+## Analysis Process
 
 It is important to describe the script in the process, and in particular expected inputs and outputs, using the information structured in the YAML file.
