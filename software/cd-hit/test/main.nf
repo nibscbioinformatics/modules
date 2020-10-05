@@ -30,7 +30,7 @@ workflow {
   CDHIT.out.clusters.map { map, clusters ->
 
     assert clusters.exists()
-    assert clusters.getExtension() == "clusters"
+    assert clusters.getExtension() == "clstr"
 
   }
 

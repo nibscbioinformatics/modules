@@ -31,7 +31,8 @@ process CDHIT {
   val options
 
   output:
-  tuple val(meta), path("*.clusters"), emit: clusters
+  tuple val(meta), path("*.clusters"), emit: clusterseq
+  tuple val(meta), path("*.clstr"), emit: clusters
   path "*.version.txt", emit: version
 
   script:
