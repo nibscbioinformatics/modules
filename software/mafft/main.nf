@@ -31,7 +31,7 @@ process MAFFT {
   val options
 
   output:
-  tuple val(meta), path("*.fasta"), emit: fasta
+  tuple val(meta), path("${meta.sampleID}_mafft.fasta"), emit: fasta
   tuple val(meta), path("*.tree"), emit: tree
   path "*.version.txt", emit: version
 
@@ -40,7 +40,7 @@ process MAFFT {
   mafft \
   ${options.args} \
   ${fasta} \
-  > ${meta.sampleID}_cdr3.fasta
+  > ${meta.sampleID}_mafft.fasta
 
   mafft --version >mafft.version.txt
   """
