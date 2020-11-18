@@ -3,24 +3,24 @@
 nextflow.preview.dsl = 2
 params.out_dir = "test_output"
 params.publish_dir_mode = "copy"
-params.single_end = false
+//params.single_end = false
 params.conda = false
 
-include { FASTQC } from '../main.nf' params(params)
+include { CNVKIT } from '../main.nf' params(params)
 
 
 workflow {
   input = file("${baseDir}/data/test_samples.tsv")
   inputSample = Channel.empty()
-  inputSample = readInputFile(input, params.single_end)
+  inputSample = readInputFile(input)
 
-  FASTQC(inputSample)
+  CNVKIT(inputSample)
 
   // ## IMPORTANT this is a test workflow
   // so a test should always been implemented to check
   // the output corresponds to what expected
 
-  FASTQC.out.html.map { map, reports ->
+  CNVKIT.out.html.map { map, reports ->
     html_read1 = reports[0]
     html_read2 = reports[1]
 

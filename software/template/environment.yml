@@ -1,6 +1,6 @@
 # To create a conda environment for this module:
 # conda env create -f environment.yml
-name: nibscbioinformatics-modules-fastqc
+name: nibscbioinformatics-modules-cnvkit
 # TODO change here the name of software only
 channels:
   - conda-forge
@@ -8,5 +8,5 @@ channels:
   - defaults
 # TODO add any channels if and only if required to install the software
 dependencies:
-  - fastqc=0.11.9
+  - cnvkit=0.9.7
 # TODO unless this is a multi software module, this should be only one
