@@ -1,79 +1,86 @@
-name: FastQC
-description: Run FastQC on sequenced reads
+name: cnvkit
+description: Run CNVKIT on bam files to infer copy number
 keywords:
-  - Quality Control
-  - QC
+  - bam
+  - fasta
 tools:
-  - fastqc:
+  - cnvkit:
       description: |
-        FastQC produces a complete reports with metrics on your sequencing reads
-        that help assessing the quality of your sequences and identify potential
-        problems with the data. In particular, base quality, GC content as well as
-        duplication levels and overrepresented sequences will help identifying how
-        to inform any following step (for example, trimming).
-      homepage: https://www.bioinformatics.babraham.ac.uk/projects/fastqc/
-      documentation: https://www.bioinformatics.babraham.ac.uk/projects/fastqc/Help/
+        CNVkit is a Python library and command-line software toolkit to infer and visualize 
+	copy number from high-throughput DNA sequencing data. It is designed for use with 
+	hybrid capture, including both whole-exome and custom target panels, and short-read 
+	sequencing platforms such as Illumina and Ion Torrent.
+      homepage: https://cnvkit.readthedocs.io/en/stable/index.html
+      documentation: https://cnvkit.readthedocs.io/en/stable/index.html
 params:
-  - params.modules['fastqc'].args:
+  - params.modules['cnvkit'].args:
       type: string
-      description: Additional command line arguments passed to fastqc
+      description: Additional command line arguments passed to cnvkit
         these are expected to be defined in a structured format under params.modules{}
         in the nextflow.config file
-  - out_dir:
+  - outdir:
       type: string
       description: |
         The pipeline's output directory. By default, the module will
-        output files into `$out_dir/MODULE_NAME`
-  - publish_dir:
-      type: string
-      description: |
-        Specifying this parameters, appends the string to the path for
-        the standard output directory provided by `$out_dir`.
-      default: MODULE_NAME (see out_dir)
+        output files into `$params.outdir/<SOFTWARE>`
   - publish_dir_mode:
       type: string
       description: |
-        Provide a value for the Nextflow `publishDir` mode parameter
-        (e.g. copy, link, ...)
-  - publish_results:
-      type: string
-      description: |
-        Whether or not to publish results into `publish_dir`. Set to `none` to not
-        publish any files at all; to `default` to publish all relevant files.
-      default: set to 'default', i.e. publishes all relevant files.
-  - single_end:
+        Value for the Nextflow `publishDir` mode parameter.
+        Available: symlink, rellink, link, copy, copyNoFollow, move.
+  - enable_conda:
     type: boolean
     description: |
-      Boolean indicating whether the corresponding sample is single-end (true)
-      or paired-end (false).
-    default: false
+      Run the module with Conda using the software specified
+      via the `conda` directive
 input:
   - meta:
       type: map
       description: |
-        The value is passed in a tuple, with the reads.
-        This is a groovy map containing sample metadata which is
-        generated in the main script. The following fields are expected
-        by the module:
-      - sampleID:
-        type: string
-        description: Sample identifier
-  - reads:
+        Groovy Map containing sample information
+        e.g. [ id:'test', single_end:false ]
+  - tumourbam:
       type: file
       description: |
-        The list is passed in a tuple with the sample metadata (meta).
-        List of input FastQ files of size 1 and 2 for single-end and paired-end data,
-        respectively.
+        Input tumour bam file
+  - normalbam:
+      type: file
+      description: |
+        Input normal bam file
+  - fasta:
+      type: file
+      description: |
+        Input reference genome fasta file
+  - annotationfile:
+      type: file
+      description: |
+        Input gene annotation file
 output:
-  - html:
-      type: tuple
-      description: Metadata map (meta) together with FastQC report (type: file)
-      pattern: "*_fastqc.html"
-  - zip:
-      type: tuple
-      description: Metadata map (meta) together with FastQC report (type: file)
-      pattern: "*_fastqc.zip"
+  - meta:
+      type: map
+      description: |
+        Groovy Map containing sample information
+        e.g. [ id:'test', single_end:false ]
+  - bed:
+      type: file
+      description: File containing genomic regions
+      pattern: "*.{bed}"
+  - cnn:
+      type: file
+      description: File containing coverage information
+      pattern: "*.{cnn}"
+  - cnr:
+      type: file
+      description: File containing copy number ratio information
+      pattern: "*.{cnr}"
+  - cns:
+      type: file
+      description: File containing copy number segment information
+      pattern: "*.{cns}"
   - version:
       type: file
-      description: software version
-      pattern: "*.version.txt"
+      description: File containing software version
+      pattern: "*.{version.txt}"
+authors:
+    - "@lescai"
+    - "@kaurravneet4123"

@@ -1,26 +1,26 @@
-def MODULE = "template"
-params.publish_dir = MODULE
-params.publish_results = "default"
+// Import generic module functions
+include { initOptions; saveFiles; getSoftwareName } from './functions'
 
-process FASTQC {
+params.options = [:]
+def options    = initOptions(params.options)
+
+process CNVKIT {
+    tag "$meta.id"
     // each module must define a process label to declare a category of
     // resource requirements
     label 'process_low'
-
-    publishDir "${params.out_dir}/${params.publish_dir}",
+    publishDir "${params.outdir}",
         mode: params.publish_dir_mode,
-        saveAs: { filename ->
-                    if (params.publish_results == "none") null
-                    else filename }
+        saveAs: { filename -> saveFiles(filename:filename, options:params.options, publish_dir:getSoftwareName(task.process), publish_id:meta.id) }
 
     //container "docker.pkg.github.com/nibscbioinformatics/$MODULE"
     // need to use biocontainers because of problem with github registry
     // requesting o-auth
-    container "quay.io/biocontainers/fastqc:0.11.9--0" // TODO -> change with appropriate biocontainer
+    container "quay.io/biocontainers/cnvkit:0.9.6--0" // TODO -> change with appropriate biocontainer
     // alternatively, now we can choose "nibscbioinformatics/modules:software-version" which is built
     // automatically from the containers definitions
 
-    conda (params.conda ? "${moduleDir}/environment.yml" : null)
+    conda (params.enable_conda ? "bioconda::cnvkit=0.9.6" : null)
 
 
   input:
@@ -28,32 +28,33 @@ process FASTQC {
   // or analysis unit, corresponding to each of "reads"
   // it is accessible via meta.name where ".name" is the name of the metadata
   // these MUST be described in the meta.yml when the metatada are expected by the process
-  tuple val(meta), path(reads)
+  tuple val(meta), path(tumourbam), path(normalbam)
+  path fasta
+  path annotationfile
 
   // configuration parameters are accessible via
   // params.modules['modulename'].name
   // where "name" is the name of parameter, and defined in nextflow.config
 
   output:
-  tuple val(meta), path("*.html"), emit: html
-  tuple val(meta), path("*.zip"), emit: zip
+  tuple val(meta), path("*.cnn"), emit: cnn
+  tuple val(meta), path("*.bed"), emit: bed
+  tuple val(meta), path("*.cnr"), emit: cnr
+  tuple val(meta), path("*.cns"), emit: cns
   path "*.version.txt", emit: version
 
   script:
-  // elegant solution as implemented by nf-core
-  // all credits to original authors :)
-  if (params.single_end) {
-      """
-      [ ! -f  ${meta.sampleID}.fastq.gz ] && ln -s $reads ${meta.sampleID}.fastq.gz
-      fastqc ${params.modules['fastqc'].args} --threads $task.cpus ${meta.sampleID}.fastq.gz
-      fastqc --version | sed -n "s/.*\\(v.*\$\\)/\\1/p" > fastqc.version.txt
-      """
-  } else {
-      """
-      [ ! -f  ${meta.sampleID}_1.fastq.gz ] && ln -s ${reads[0]} ${meta.sampleID}_1.fastq.gz
-      [ ! -f  ${meta.sampleID}_2.fastq.gz ] && ln -s ${reads[1]} ${meta.sampleID}_2.fastq.gz
-      fastqc ${params.modules['fastqc'].args} --threads $task.cpus ${meta.sampleID}_1.fastq.gz ${meta.sampleID}_2.fastq.gz
-      fastqc --version | sed -n "s/.*\\(v.*\$\\)/\\1/p" > fastqc.version.txt
-      """
-  }
+  def software = getSoftwareName(task.process)
+  def prefix   = options.suffix ? "${meta.id}.${options.suffix}" : "${meta.id}"
+  """
+  cnvkit.py batch $tumourbam 
+    --normal $normalbam \\
+    --method wgs \\
+    --fasta $reffasta \\
+    --annotate $annotationfile \\
+    --output-reference my_reference.cnn --output-dir results
+
+  echo \$(cnvkit --version 2>&1) | sed 's/^.*cnvkit //; s/Using.*\$//' > ${software}.version.txt
+  """
 }
+
