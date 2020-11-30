@@ -25,38 +25,48 @@ process CNVKIT {
     conda (params.enable_conda ? "bioconda::cnvkit=0.9.6" : null)
 
 
-  input:
-  // --> meta is a Groovy MAP containing any number of information (metadata) per sample
-  // or analysis unit, corresponding to each of "reads"
-  // it is accessible via meta.name where ".name" is the name of the metadata
-  // these MUST be described in the meta.yml when the metatada are expected by the process
-  tuple val(meta), path(tumourbam), path(normalbam)
-  path fasta
-  path annotationfile
+    input:
+    // --> meta is a Groovy MAP containing any number of information (metadata) per sample
+    // or analysis unit, corresponding to each of "reads"
+    // it is accessible via meta.name where ".name" is the name of the metadata
+    // these MUST be described in the meta.yml when the metatada are expected by the process
+    tuple val(meta), path(tumourbam), path(normalbam)
+    path fasta
+    path annotationfile
 
-  // configuration parameters are accessible via
-  // params.modules['modulename'].name
-  // where "name" is the name of parameter, and defined in nextflow.config
+    // configuration parameters are accessible via
+    // params.modules['modulename'].name
+    // where "name" is the name of parameter, and defined in nextflow.config
 
-  output:
-  tuple val(meta), path("*.cnn"), emit: cnn
-  tuple val(meta), path("*.bed"), emit: bed
-  tuple val(meta), path("*.cnr"), emit: cnr
-  tuple val(meta), path("*.cns"), emit: cns
-  path "*.version.txt", emit: version
+    output:
+    tuple val(meta), path("*.cnn"), emit: cnn
+    tuple val(meta), path("*.bed"), emit: bed
+    tuple val(meta), path("*.cnr"), emit: cnr
+    tuple val(meta), path("*.cns"), emit: cns
+    path "*.version.txt", emit: version
 
-  script:
-  def software = getSoftwareName(task.process)
-  def prefix   = options.suffix ? "${meta.id}.${options.suffix}" : "${meta.id}"
-  """
-  cnvkit.py batch $tumourbam 
-    --normal $normalbam \\
-    --method wgs \\
-    --fasta $reffasta \\
-    --annotate $annotationfile \\
-    --output-reference my_reference.cnn --output-dir results
-
-  echo $VERSION > ${software}.version.txt
-  """
+    script:
+    def software = getSoftwareName(task.process)
+    def prefix   = options.suffix ? "${meta.id}.${options.suffix}" : "${meta.id}"
+    if (meta.test_with_normal) {
+        """
+        cnvkit.py batch $options.args $tumourbam 
+          --normal $normalbam \\
+          --method wgs \\
+          --fasta $reffasta \\
+          --annotate $annotationfile \\
+          --output-reference my_reference.cnn --output-dir results
+          echo $VERSION > ${software}.version.txt
+        """
+    } else {
+	"""
+        cnvkit.py batch $options.args $tumourbam
+          --normal \\
+          --method wgs \\
+          --fasta $reffasta \\
+          --annotate $annotationfile \\
+          --output-reference my_reference.cnn --output-dir results
+          echo $VERSION > ${software}.version.txt
+        """
+    }
 }
-

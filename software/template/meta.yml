@@ -3,6 +3,7 @@ description: Run CNVKIT on bam files to infer copy number
 keywords:
   - bam
   - fasta
+  - annotation
 tools:
   - cnvkit:
       description: |
