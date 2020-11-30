@@ -4,6 +4,8 @@ include { initOptions; saveFiles; getSoftwareName } from './functions'
 params.options = [:]
 def options    = initOptions(params.options)
 
+def VERSION = '0.9.6'
+
 process CNVKIT {
     tag "$meta.id"
     // each module must define a process label to declare a category of
@@ -54,7 +56,7 @@ process CNVKIT {
     --annotate $annotationfile \\
     --output-reference my_reference.cnn --output-dir results
 
-  echo \$(cnvkit --version 2>&1) | sed 's/^.*cnvkit //; s/Using.*\$//' > ${software}.version.txt
+  echo $VERSION > ${software}.version.txt
   """
 }
 
